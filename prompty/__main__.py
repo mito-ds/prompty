@@ -27,7 +27,7 @@ def evaludate_prompts_with_test_cases(prompt_name: Optional[str], test_case_name
             if test_case_name is not None and test['test_case_name'] != test_case_name:
                 continue
 
-            prompt_string = prompt['prompt_function'](test['df_names'], test['input_dfs'], [], test['user_input'])
+            prompt_string = prompt['prompt_function'](test['df_names'], test['input_dfs'], test['selection'], test['user_input'])
             completion = get_completion(prompt_string)
 
             save_test_instance_to_disk(
@@ -57,8 +57,6 @@ def main():
     parser_load.add_argument('--run-id', help='The specific run id to load. If this is empty, will load the most recent run by default', required=False)
     parser_load.add_argument('--outfile', help='Where to write the dataframe', required=False)
     parser_load.add_argument('-s', '--short', help='If you only want the prompt_name, test_case_name, and completion', action='store_true')
-
-
 
     args = parser.parse_args()
     if args.command == 'eval':

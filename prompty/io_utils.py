@@ -1,21 +1,14 @@
 
 import json
 import os
-from typing import Any, Optional, TypedDict
+from typing import Any, Optional
 
 import pandas as pd
 
 from prompty.prompt import Prompt
-from prompty.tests import UserInputTestCase
+from prompty.types import TestResultSaveFormat, UserInputTestCase
 
 TEST_CASE_FOLDER = 'outputs/'
-
-class TestResultSaveFormat(TypedDict):
-    prompt_name: str
-    test_case_name: str
-    prompt_string: str
-    completion: str
-
 
 def save_test_instance_to_disk(run_id: str, prompt: Prompt, test_case: UserInputTestCase, prompt_string: str, completion: Any) -> None:
     
