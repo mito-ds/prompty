@@ -10,7 +10,12 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Run with:
+Then, export your Open AI key with:
+```
+export OPENAI_API_KEY="sk-..."
+```
+
+Then, tun with:
 ```
 python -m prompty eval
 ```
