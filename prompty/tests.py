@@ -117,4 +117,8 @@ def get_tests() -> List[UserInputTestCase]:
             'selection': {'selected_df_name': 'df1', 'selected_columns': ['time_online'], 'selected_rows': []},
             'output_dfs': [pd.DataFrame({'user_id': [1, 2, 3, 4], 'time_online': [.2, .4, .9, .10]})],
         },
+        # TODO: on top of specified tests, do tests with massive dataframes:
+            # lots of columns
+            # lots of rows
+            # huge pieces of data in the dataframe
     ]
