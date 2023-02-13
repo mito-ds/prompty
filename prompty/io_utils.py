@@ -55,7 +55,7 @@ def load_run_id(run_id: Optional[str]) -> pd.DataFrame:
     for test_result_path in test_result_paths:
         with open(test_result_path, 'r') as f:
             test_result = json.loads(f.read())
-            test_result['full_completion'] = test_result['completion']['choices']
+            test_result['full_completion'] = test_result['completion']['choices'][0]['text']
             test_results.append(test_result)
 
     return pd.DataFrame(test_results)
