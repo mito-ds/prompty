@@ -28,6 +28,7 @@ def evaludate_prompts_with_test_cases(prompt_name: Optional[str], test_case_name
                 continue
 
             prompt_string = prompt['prompt_function'](test['df_names'], test['input_dfs'], test['selection'], test['user_input'])
+
             completion = get_completion(prompt_string)
 
             save_test_instance_to_disk(
