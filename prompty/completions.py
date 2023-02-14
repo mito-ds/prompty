@@ -57,10 +57,12 @@ def get_completion(prompt: str) -> Any:
     # should add a manual delay here that is somewhere between 2-4 seconds?
     #time.sleep(2)
 
-    return completions_with_backoff(
-        model="code-davinci-002",
-        prompt=prompt,
-        temperature=.2,
-        max_tokens=200,
-        stop=['```']
-    )
+    try:
+        return completions_with_backoff(
+            model="code-davinci-002",
+            prompt=prompt,
+            temperature=.2,
+            stop=['```']
+        )
+    except openai.InvalidRequestError as e:
+        return e

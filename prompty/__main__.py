@@ -28,14 +28,14 @@ def evaludate_prompts_with_test_cases(prompt_name: Optional[str], test_case_name
                 continue
 
             prompt_string = prompt['prompt_function'](test['df_names'], test['input_dfs'], test['selection'], test['user_input'])
-            completion = get_completion(prompt_string)
+            completion_or_error = get_completion(prompt_string)
 
             save_test_instance_to_disk(
                 run_id,
                 prompt,
                 test,
                 prompt_string,
-                completion
+                completion_or_error
             )
 
 
@@ -62,11 +62,7 @@ def main():
     if args.command == 'eval':
         evaludate_prompts_with_test_cases(args.prompt_name, args.test_case_name)
     elif args.command == 'load':
-        run_df = load_run_id(args.run_id)
-        print(args)
-        if args.short:
-            run_df = run_df[['prompt_name','test_case_name','full_completion']]
-
+        run_df = load_run_id(args.run_id, short=args.short)        
         if args.outfile is not None:
             run_df.to_csv(args.outfile, index=False)
 

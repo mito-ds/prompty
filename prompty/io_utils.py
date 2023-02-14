@@ -10,7 +10,7 @@ from prompty.types import TestResultSaveFormat, UserInputTestCase
 
 TEST_CASE_FOLDER = 'outputs/'
 
-def save_test_instance_to_disk(run_id: str, prompt: Prompt, test_case: UserInputTestCase, prompt_string: str, completion: Any) -> None:
+def save_test_instance_to_disk(run_id: str, prompt: Prompt, test_case: UserInputTestCase, prompt_string: str, completion_or_error: Any) -> None:
     
     # Create the output folder if it does not exist
     if not os.path.exists(TEST_CASE_FOLDER):
@@ -30,7 +30,8 @@ def save_test_instance_to_disk(run_id: str, prompt: Prompt, test_case: UserInput
         'prompt_name': prompt['prompt_name'],
         'test_case_name': test_case['test_case_name'],
         'prompt_string': prompt_string,
-        'completion': completion
+        'completion': completion_or_error if not isinstance(completion_or_error, Exception) else '',
+        'error': str(completion_or_error) if isinstance(completion_or_error, Exception) else ''
     }
 
     # Then, finially write the file for this test result
@@ -39,7 +40,7 @@ def save_test_instance_to_disk(run_id: str, prompt: Prompt, test_case: UserInput
         f.write(json.dumps(test_result))
     
 
-def load_run_id(run_id: Optional[str]) -> pd.DataFrame:
+def load_run_id(run_id: Optional[str], short=False) -> pd.DataFrame:
 
     if run_id is not None:
         run_id_folder = os.path.join(TEST_CASE_FOLDER, run_id)
@@ -55,7 +56,15 @@ def load_run_id(run_id: Optional[str]) -> pd.DataFrame:
     for test_result_path in test_result_paths:
         with open(test_result_path, 'r') as f:
             test_result = json.loads(f.read())
-            test_result['full_completion'] = test_result['completion']['choices'][0]['text']
+            if test_result['completion'] != '':
+                test_result['full_completion'] = test_result['completion']['choices'][0]['text']
+            else:
+                test_result['full_completion'] = ''
             test_results.append(test_result)
 
-    return pd.DataFrame(test_results)
+    run_df = pd.DataFrame(test_results)
+
+    if short:
+        run_df = run_df[['prompt_name','test_case_name','full_completion', 'error']]
+
+    return run_df

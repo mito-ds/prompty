@@ -20,3 +20,4 @@ class TestResultSaveFormat(TypedDict):
     test_case_name: str
     prompt_string: str
     completion: str
+    error: str

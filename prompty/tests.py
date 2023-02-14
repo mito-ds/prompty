@@ -190,16 +190,27 @@ def get_tests() -> List[UserInputTestCase]:
             'output_dfs': [], # TODO
         },
         {
-            'test_case_name': 'single boolean result',
-            'df_names': ['df1'],
-            'input_dfs': [pd.DataFrame({'user_id': [1, 2, 3, 4], 'time_online': [.2, .4, .9, .10], 'date': pd.to_datetime(['1-1-2020', '2-2-2020', '3-3-2020', '4-4-2020'])})],
-            'user_input': 'did user 2 spend more than .1 online',
+            'test_case_name': 'large number of columns',
+            'df_names': ['df1', 'df2', 'df3', 'df4'],
+            'input_dfs': [pd.DataFrame({i: [i] for i in range(1000)}), pd.DataFrame({i: [i] for i in range(1000)}), pd.DataFrame({i: [i] for i in range(1000)}), pd.DataFrame({i: [i] for i in range(1000)})],
+            'user_input': 'concate df1 and df2',
             'selection': None,
             'output_dfs': [], # TODO
         },
-        
-        # TODO: on top of specified tests, do tests with massive dataframes:
-            # lots of columns
-            # lots of rows
-            # huge pieces of data in the dataframe
+        {
+            'test_case_name': 'long column name',
+            'df_names': ['df1'],
+            'input_dfs': [pd.DataFrame({'a'*100000: [0]})],
+            'user_input': 'append row to df1',
+            'selection': None,
+            'output_dfs': [], # TODO
+        },
+        {
+            'test_case_name': 'large data values',
+            'df_names': ['df1'],
+            'input_dfs': [pd.DataFrame({'data': ['a' * 100000] for i in range(2)})],
+            'user_input': 'delete selected column',
+            'selection': {'selected_df_name': 'df1', 'selected_columns': ['data'], 'selected_rows': []},
+            'output_dfs': [], # TODO
+        },
     ]
