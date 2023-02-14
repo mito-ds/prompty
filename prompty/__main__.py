@@ -23,9 +23,11 @@ def evaludate_prompts_with_test_cases(prompt_name: Optional[str], test_case_name
         if prompt_name is not None and prompt['prompt_name'] != prompt_name:
             continue
 
+        print("Prompt:", prompt['prompt_name'])
         for test in tests:
             if test_case_name is not None and test['test_case_name'] != test_case_name:
                 continue
+            print("\t- Test case:", test['test_case_name'])
 
             prompt_string = prompt['prompt_function'](test['df_names'], test['input_dfs'], test['selection'], test['user_input'])
             completion_or_error = get_completion(prompt_string)

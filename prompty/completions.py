@@ -62,7 +62,8 @@ def get_completion(prompt: str) -> Any:
             model="code-davinci-002",
             prompt=prompt,
             temperature=.2,
-            stop=['```']
+            stop=['```'],
+            max_tokens=200
         )
     except openai.InvalidRequestError as e:
         return e

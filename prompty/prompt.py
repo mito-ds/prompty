@@ -92,6 +92,22 @@ def get_prompts() -> List[Prompt]:
             'prompt_name': 'sketch_function_completion_with_columns_and_dtypes_and_first_5_data_and_selection',
             'prompt_function': get_prompt_sketch_function_completion_with_columns_and_dtypes_and_first_5_data_and_selection,
         },
+        {
+            'prompt_name': 'prompt_give_warning_with_graphs_or_format',
+            'prompt_function': get_prompt_give_warning_with_graphs_or_format,
+        },
+        {
+            'prompt_name': 'prompt_software_engineer',
+            'prompt_function': get_prompt_software_engineer,
+        },
+        {
+            'prompt_name': 'prompt_return_edited_or_new_dataframes',
+            'prompt_function': get_prompt_return_edited_or_new_dataframes,
+        },
+        {
+            'prompt_name': 'prompt_structured_examples',
+            'prompt_function': get_prompt_structured_examples,
+        },
     ] 
 
 def get_prompt_with_df_names_only(df_names: List[str], dfs: List[pd.DataFrame], current_selection: Optional[Selection], user_input: str):
@@ -111,6 +127,65 @@ def get_prompt_with_columns_and_dtypes(df_names: List[str], dfs: List[pd.DataFra
     return f"""
     The user wants to edit the pandas dataframes {df_names}. They want to: {user_input}
     {new_line.join(df_descriptions)}
+
+    The Python code to make this transformation:
+    ```
+    """
+
+def get_prompt_structured_examples(df_names: List[str], dfs: List[pd.DataFrame], current_selection: Optional[Selection], user_input: str):
+    df_descriptions = []
+    for df_name, df in zip(df_names, dfs):
+        df_descriptions.append(get_description_of_dataframe(df_name, df))
+
+    example = ''
+    if len(df_names) > 0:
+        column = dfs[0].columns[0]
+        example += f'Transformation: delete {column} from {df_names[0]}\n'
+        example += f"""    ```
+    {df_names[0]}.drop({column}, inplace=True)
+    ```"""
+
+        # TODO: we could add more examples
+
+    new_line = '\n'
+    return f"""
+    Input data:
+    {new_line.join(df_descriptions)}
+
+    {example}
+
+    Transformation: {user_input}
+    Code:
+    ```
+    """
+
+def get_prompt_return_edited_or_new_dataframes(df_names: List[str], dfs: List[pd.DataFrame], current_selection: Optional[Selection], user_input: str):
+    df_descriptions = []
+    for df_name, df in zip(df_names, dfs):
+        df_descriptions.append(get_description_of_dataframe(df_name, df))
+
+    new_line = '\n'
+    return f"""
+    The user wants to edit the pandas dataframes {df_names}. They want to: {user_input}
+    {new_line.join(df_descriptions)}
+
+    Put all edited or new dataframes in a list called EDITED_OR_NEW_DATAFRAMES = [...].
+
+    The Python code to make this transformation:
+    ```
+    """
+
+def get_prompt_give_warning_with_graphs_or_format(df_names: List[str], dfs: List[pd.DataFrame], current_selection: Optional[Selection], user_input: str):
+    df_descriptions = []
+    for df_name, df in zip(df_names, dfs):
+        df_descriptions.append(get_description_of_dataframe(df_name, df))
+
+    new_line = '\n'
+    return f"""
+    The user wants to edit the pandas dataframes {df_names}. They want to: {user_input}
+    {new_line.join(df_descriptions)}
+
+    If the user tries to create a graph or format, the Python code should say "# Warning: do not use this to create a graph or format"
 
     The Python code to make this transformation:
     ```
@@ -261,4 +336,21 @@ def get_prompt_sketch_function_completion_with_columns_and_dtypes_and_first_5_da
 
         {new_line.join(df_creation_code)}
         {new_line}
+    """
+
+
+def get_prompt_software_engineer(df_names: List[str], dfs: List[pd.DataFrame], current_selection: Optional[Selection], user_input: str):
+    df_descriptions = []
+    for df_name, df in zip(df_names, dfs):
+        df_descriptions.append(get_description_of_dataframe(df_name, df, include_data=True))
+
+    new_line = '\n'
+    return f"""
+    You are a world-class software engineer. You have the dataframes {', '.join(df_names)}, and you want to {user_input}.
+    
+    {new_line.join(df_descriptions)}
+    {get_selection_string(current_selection)}
+
+    You write the Python code to make this transformation:
+    ```
     """
