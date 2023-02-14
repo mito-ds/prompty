@@ -4,6 +4,7 @@ import platform
 from typing import Any, Callable, List, Optional, TypedDict
 
 import pandas as pd
+from prompty.prompt_utils import get_dataframe_creation_code
 
 from prompty.types import Selection
 
@@ -82,6 +83,14 @@ def get_prompts() -> List[Prompt]:
         {
             'prompt_name': 'intellegently_includes_as_much_data_as_possible',
             'prompt_function': get_prompt_intellegently_includes_as_much_data_as_possible,
+        },
+        {
+            'prompt_name': 'pandas_developer_columns_and_dtypes_and_first_5_data_and_selection_and_computer_info',
+            'prompt_function': get_prompt_pandas_developer_columns_and_dtypes_and_first_5_data_and_selection_and_computer_info,
+        },
+        {
+            'prompt_name': 'sketch_function_completion_with_columns_and_dtypes_and_first_5_data_and_selection',
+            'prompt_function': get_prompt_sketch_function_completion_with_columns_and_dtypes_and_first_5_data_and_selection,
         },
     ] 
 
@@ -211,6 +220,7 @@ f"""Description of dataframe {df_name}:
     if (len(aux_data) / CHARS_PER_TOKEN) < MAX_TOKENS:
         aux_data += f'\n - The current selection: {get_selection_string(current_selection)}'
 
+    
     return f"""
     The user wants to edit the pandas dataframes {df_names}. They want to: {user_input}
 
@@ -219,5 +229,36 @@ f"""Description of dataframe {df_name}:
     The Python code to make this transformation:
     """
 
+def get_prompt_pandas_developer_columns_and_dtypes_and_first_5_data_and_selection_and_computer_info(df_names: List[str], dfs: List[pd.DataFrame], current_selection: Optional[Selection], user_input: str):
+    df_descriptions = []
+    for df_name, df in zip(df_names, dfs):
+        df_descriptions.append(get_description_of_dataframe(df_name, df, include_data=True))
 
+    new_line = '\n'
+    return f"""
+    Imagine you're a pandas data scientist. You have the dataframes {df_names}. You want to: {user_input}
+    {new_line.join(df_descriptions)}
+    {get_selection_string(current_selection)}
+    {get_computer_info()}
 
+    The Python code to make this transformation:
+    ```
+    """
+
+def get_prompt_sketch_function_completion_with_columns_and_dtypes_and_first_5_data_and_selection(df_names: List[str], dfs: List[pd.DataFrame], current_selection: Optional[Selection], user_input: str):
+    
+    df_creation_code = []
+    for df_name, df in zip(df_names, dfs):
+        df_creation_code.append(get_dataframe_creation_code(df_name, df, include_data=True))
+
+    new_line = '\n'
+    
+    return f"""
+        \"\"\"
+            {user_input} 
+            {get_selection_string(current_selection)}
+        \"\"\"
+
+        {new_line.join(df_creation_code)}
+        {new_line}
+    """

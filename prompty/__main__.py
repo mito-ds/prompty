@@ -1,7 +1,7 @@
 import argparse
 import os
 import time
-from typing import Any, Optional
+from typing import Optional
 
 import openai
 from prompty.completions import get_completion

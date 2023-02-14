@@ -86,6 +86,14 @@ def get_tests() -> List[UserInputTestCase]:
             'output_dfs': [pd.DataFrame({'USER_ID': [1, 2, 1, 4, 5, 3, 7, 7, 4, 2, 1], 'LEMONS': [100, 200, 1, 3, 4, 123, 12, 23, 412, 23, 1]}), pd.DataFrame({'user_id': [1, 2, 1, 4, 5, 3, 7, 7, 4, 2, 1], 'melons': [100, 200, 1, 3, 4, 123, 12, 23, 412, 23, 1]})],
         },
         {
+            'test_case_name': 'rename values to lowercase',
+            'df_names': ['df1'],
+            'input_dfs': [pd.DataFrame({'First Name': ['Aaron', 'Jacob', 'Nate', 'Jon', 'Katie'], 'Last Name': ['DR', 'DR', 'RUSH', 'DR', 'RUSH']})],
+            'user_input': 'rename all values to lowercase',
+            'selection': {'selected_df_name': 'df1', 'selected_columns': ['First Name'], 'selected_rows': []},
+            'output_dfs': [pd.DataFrame({'First Name': ['aaron', 'jacob', 'nate', 'jon', 'katie'], 'Last Name': ['dr', 'df', 'rush', 'dr', 'rush']})],
+        },
+        {
             'test_case_name': 'format as percentages',
             'df_names': ['df1'],
             'input_dfs': [pd.DataFrame({'user_id': [1, 2, 3, 4], 'time_online': [.2, .4, .9, .10]})],
@@ -132,6 +140,14 @@ def get_tests() -> List[UserInputTestCase]:
             'user_input': 'send df1 in email',
             'selection': {'selected_df_name': 'df1', 'selected_columns': ['time_online'], 'selected_rows': []},
             'output_dfs': [pd.DataFrame({'user_id': [1, 2, 3, 4], 'time_online': [.2, .4, .9, .10]})],
+        },
+        {
+            'test_case_name': 'import last modified file',
+            'df_names': [],
+            'input_dfs': [],
+            'user_input': 'import the last modified file in my downloads folder',
+            'selection': None,
+            'output_dfs': [] # TODO,
         },
         {
             'test_case_name': 'explicit',

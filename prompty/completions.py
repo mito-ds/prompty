@@ -55,7 +55,7 @@ def get_completion(prompt: str) -> Any:
 
     # TODO: we are wasting lots of requests when we continually back off. As such, we probably
     # should add a manual delay here that is somewhere between 2-4 seconds?
-    #time.sleep(2)
+    time.sleep(2)
 
     try:
         return completions_with_backoff(
